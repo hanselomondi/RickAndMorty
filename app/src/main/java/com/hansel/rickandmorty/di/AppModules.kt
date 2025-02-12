@@ -4,7 +4,9 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.hansel.rickandmorty.data.datasource.RemoteDataSourceImpl
 import com.hansel.rickandmorty.data.remote.RickAndMortyApi
+import com.hansel.rickandmorty.data.repository.CharacterRepositoryImpl
 import com.hansel.rickandmorty.domain.datasource.RemoteDataSource
+import com.hansel.rickandmorty.domain.repository.CharacterRepository
 import com.hansel.rickandmorty.util.BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -49,4 +51,11 @@ val dataSourceModule = module {
     single<RemoteDataSource> {
         RemoteDataSourceImpl(get())
     }
+}
+
+val repositoryModule = module {
+    single<CharacterRepository> {
+        CharacterRepositoryImpl(get())
+    }
+}
 }

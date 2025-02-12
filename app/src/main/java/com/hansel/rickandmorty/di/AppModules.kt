@@ -7,9 +7,11 @@ import com.hansel.rickandmorty.data.remote.RickAndMortyApi
 import com.hansel.rickandmorty.data.repository.CharacterRepositoryImpl
 import com.hansel.rickandmorty.domain.datasource.RemoteDataSource
 import com.hansel.rickandmorty.domain.repository.CharacterRepository
+import com.hansel.rickandmorty.presentation.CharacterViewModel
 import com.hansel.rickandmorty.util.BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -58,4 +60,7 @@ val repositoryModule = module {
         CharacterRepositoryImpl(get())
     }
 }
+
+val viewModelModule = module {
+    viewModel { CharacterViewModel(get()) }
 }

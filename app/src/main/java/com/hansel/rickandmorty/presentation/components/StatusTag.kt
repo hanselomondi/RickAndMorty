@@ -12,9 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
 import com.hansel.rickandmorty.R
-import com.hansel.rickandmorty.domain.model.Status
+import com.hansel.rickandmorty.domain.model.CharacterStatus
 import com.hansel.rickandmorty.ui.theme.AppTheme
 import com.hansel.rickandmorty.ui.theme.greenStatusBackground
 import com.hansel.rickandmorty.util.CustomPreview
@@ -22,17 +21,17 @@ import com.hansel.rickandmorty.util.CustomPreview
 @Composable
 fun StatusTag(
     modifier: Modifier = Modifier,
-    status: Status
+    status: CharacterStatus
 ) {
     val backgroundColor = when (status) {
-        Status.ALIVE -> greenStatusBackground
-        Status.DEAD -> MaterialTheme.colorScheme.errorContainer
-        Status.UNKNOWN -> MaterialTheme.colorScheme.surfaceDim
+        CharacterStatus.Alive -> greenStatusBackground
+        CharacterStatus.Dead -> MaterialTheme.colorScheme.errorContainer
+        CharacterStatus.Unknown -> MaterialTheme.colorScheme.inverseSurface
     }
     val textColor = when (status) {
-        Status.ALIVE -> Color.Green
-        Status.DEAD -> MaterialTheme.colorScheme.onErrorContainer
-        Status.UNKNOWN -> MaterialTheme.colorScheme.onSurfaceVariant
+        CharacterStatus.Alive -> Color.Green
+        CharacterStatus.Dead -> MaterialTheme.colorScheme.onErrorContainer
+        CharacterStatus.Unknown -> MaterialTheme.colorScheme.inverseOnSurface
     }
 
     Row(
@@ -43,13 +42,7 @@ fun StatusTag(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = stringResource(
-                when (status) {
-                    Status.DEAD -> R.string.dead_status
-                    Status.ALIVE -> R.string.alive_status
-                    Status.UNKNOWN -> R.string.unknown_status
-                }
-            ),
+            text = status.status,
             color = textColor
         )
     }
@@ -59,6 +52,6 @@ fun StatusTag(
 @Composable
 private fun StatusTagPreview() {
     AppTheme {
-        StatusTag(status = Status.ALIVE)
+        StatusTag(status = CharacterStatus.Alive)
     }
 }

@@ -2,6 +2,8 @@ package com.hansel.rickandmorty.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+val greenStatusBackground = Color(0xFF119B00)
+
 val primaryLight = Color(0xFF616118)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFE8E78F)

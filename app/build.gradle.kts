@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.bundles.networking)
     implementation(libs.bundles.koin)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.coil.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -17,6 +17,10 @@ class CharacterRepositoryImpl(
     }
 
     override suspend fun getCharacterById(id: Int): NetworkResult<Character> {
-        TODO("Not yet implemented")
+        return try {
+            remoteDataSource.fetchCharacterById(id)
+        } catch (e: Exception) {
+            NetworkResult.Error("${e.message}")
+        }
     }
 }

@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">rickandmorty</string>
+
+    <string name="unknown">Unknown</string>
+
+    <!-- CharacterDetailsScreen -->
+    <string name="origin_label">Last known location:</string>
+    <string name="species_label">Species:</string>
+    <string name="episodes_label">Episodes character appears in:</string>
+    <string name="type_label">Character type:</string>
+    <string name="none">None</string>
 </resources>

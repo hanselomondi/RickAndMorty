@@ -10,7 +10,7 @@ val PREVIEW_CHARACTER = Character(
     name = "Morty K-22",
     status = CharacterStatus.Alive,
     species = "Human",
-    type = "",
+    type = null,
     location = Character.CharacterLocation("kl", "kl"),
     image = "https=//rickandmortyapi.com/api/character/avatar/233.jpeg",
     episodes = listOf("https=//rickandmortyapi.com/api/episode/28")

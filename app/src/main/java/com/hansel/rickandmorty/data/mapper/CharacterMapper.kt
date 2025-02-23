@@ -24,7 +24,7 @@ fun CharacterDto.toDomainCharacter(): Character {
         type = type?.ifEmpty { null },
         location = Character.CharacterLocation(
             name = location.name,
-            url = location.url
+            url = location.url?.ifEmpty { null }
         ),
         image = image,
         episodes = episodes ?: emptyList()

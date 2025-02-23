@@ -15,14 +15,11 @@ data class CharacterDto(
     val location: Location,
     val image: String,
     @SerialName("episode")
-    val episodes: List<String>?,
-    @SerialName("url")
-    val characterUrl: String?,
-    val created: String
+    val episodes: List<String>?
 ) {
     @Serializable
     data class Location(
         val name: String,
-        val url: String
+        val url: String?
     )
 }

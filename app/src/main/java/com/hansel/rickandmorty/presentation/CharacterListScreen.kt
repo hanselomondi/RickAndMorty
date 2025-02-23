@@ -3,44 +3,45 @@ package com.hansel.rickandmorty.presentation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hansel.rickandmorty.R
 import com.hansel.rickandmorty.domain.model.Character
 import com.hansel.rickandmorty.presentation.components.CharacterCard
+import com.hansel.rickandmorty.presentation.components.ErrorMessage
 import com.hansel.rickandmorty.ui.theme.AppTheme
 import com.hansel.rickandmorty.util.CustomPreview
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun MainScreen(
+fun CharacterListScreen(
     modifier: Modifier = Modifier,
-    characterViewModel: CharacterViewModel = koinViewModel()
+    characterViewModel: CharacterViewModel = koinViewModel(),
+    onCardClicked: (Int) -> Unit
 ) {
-    val screenState by characterViewModel.screenState.collectAsStateWithLifecycle()
+    val screenState by characterViewModel.characterListState.collectAsStateWithLifecycle()
 
-    MainScreenContent(
-        screenState = screenState
+    CharacterListContent(
+        screenState = screenState,
+        onCardClicked = onCardClicked,
+        modifier = modifier
     )
 }
 
 @Composable
-fun MainScreenContent(
+fun CharacterListContent(
     modifier: Modifier = Modifier,
-    screenState: ScreenState
+    screenState: ScreenState,
+    onCardClicked: (Int) -> Unit
 ) {
     Scaffold(
         modifier = modifier
@@ -65,19 +66,17 @@ fun MainScreenContent(
                         verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
                     ) {
                         items(characters) { character ->
-                                CharacterCard(character = character)
+                            CharacterCard(
+                                character = character,
+                                onCardClicked = onCardClicked
+                            )
                         }
                     }
                 }
 
                 is ScreenState.Error -> {
-                    Text(
-                        text = screenState.message,
-                        color = MaterialTheme.colorScheme.error,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(dimensionResource(R.dimen.padding_small))
+                    ErrorMessage(
+                        message = screenState.message
                     )
                 }
             }
@@ -89,8 +88,9 @@ fun MainScreenContent(
 @Composable
 private fun MainScreenContentPreview() {
     AppTheme {
-        MainScreenContent(
+        CharacterListContent(
             screenState = ScreenState.Error("Network Error: Check your internet connection"),
+            onCardClicked = {},
             modifier = Modifier
                 .fillMaxSize()
         )

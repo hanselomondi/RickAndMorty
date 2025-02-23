@@ -12,6 +12,6 @@ data class Character(
 ) {
     data class CharacterLocation(
         val name: String,
-        val url: String
+        val url: String?
     )
 }

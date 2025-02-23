@@ -32,12 +32,31 @@ class RemoteDataSourceImpl(
             )
         } catch (e: Exception) {
             NetworkResult.Error(
-                message = "${e.message}"
+                message = "Unknown Error"
             )
         }
     }
 
     override suspend fun fetchCharacterById(characterId: Int): NetworkResult<Character> {
-        TODO("Not yet implemented")
+        return try {
+            val response = apiService.fetchCharacterById(characterId)
+            if (response.isSuccessful) {
+                NetworkResult.Success(
+                    data = response.body()!!.toDomainCharacter() // Assuming the body can never be empty on a successful network call
+                )
+            } else {
+                NetworkResult.Error(
+                    message = response.errorBody()?.toString() ?: "Unknown error"
+                )
+            }
+        } catch (e: IOException) {
+            NetworkResult.Error(
+                message = "Network Error: Check your internet connection"
+            )
+        } catch (e: Exception) {
+            NetworkResult.Error(
+                message = "Unknown Error"
+            )
+        }
     }
 }

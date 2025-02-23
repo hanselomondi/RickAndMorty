@@ -1,9 +1,9 @@
 package com.hansel.rickandmorty.presentation
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hansel.rickandmorty.R
 import com.hansel.rickandmorty.domain.model.Character
@@ -73,7 +74,9 @@ fun MainScreenContent(
                     Text(
                         text = screenState.message,
                         color = MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Center,
                         modifier = Modifier
+                            .fillMaxWidth()
                             .padding(dimensionResource(R.dimen.padding_small))
                     )
                 }
@@ -87,7 +90,7 @@ fun MainScreenContent(
 private fun MainScreenContentPreview() {
     AppTheme {
         MainScreenContent(
-            screenState = ScreenState.Error("No Network"),
+            screenState = ScreenState.Error("Network Error: Check your internet connection"),
             modifier = Modifier
                 .fillMaxSize()
         )

@@ -4,7 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.hansel.rickandmorty.presentation.MainScreen
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
+import com.hansel.rickandmorty.presentation.navigation.AppNavigation
 import com.hansel.rickandmorty.ui.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
@@ -13,7 +18,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AppTheme {
-                MainScreen()
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background)
+                ) {
+                    AppNavigation()
+                }
             }
         }
     }

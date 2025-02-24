@@ -1,8 +1,10 @@
 package com.hansel.rickandmorty.di
 
+import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.hansel.rickandmorty.data.datasource.RemoteDataSourceImpl
+import com.hansel.rickandmorty.data.local.CharacterDatabase
 import com.hansel.rickandmorty.data.remote.RickAndMortyApi
 import com.hansel.rickandmorty.data.repository.CharacterRepositoryImpl
 import com.hansel.rickandmorty.domain.datasource.RemoteDataSource
@@ -11,8 +13,11 @@ import com.hansel.rickandmorty.presentation.CharacterViewModel
 import com.hansel.rickandmorty.util.BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidApplication
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+import org.koin.dsl.single
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -46,6 +51,20 @@ val apiServiceModule = module {
 
     single {
         get<Retrofit>().create(RickAndMortyApi::class.java)
+    }
+}
+
+val databaseModule = module {
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            CharacterDatabase::class.java,
+            "character-database"
+        ).build()
+    }
+
+    single {
+        get<CharacterDatabase>().getCharacterDao()
     }
 }
 

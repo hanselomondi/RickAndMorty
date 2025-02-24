@@ -3,6 +3,7 @@ package com.hansel.rickandmorty
 import android.app.Application
 import com.hansel.rickandmorty.di.apiServiceModule
 import com.hansel.rickandmorty.di.dataSourceModule
+import com.hansel.rickandmorty.di.databaseModule
 import com.hansel.rickandmorty.di.okHttpModule
 import com.hansel.rickandmorty.di.repositoryModule
 import com.hansel.rickandmorty.di.viewModelModule
@@ -17,7 +18,8 @@ class MyApp : Application() {
             androidLogger()
             androidContext(this@MyApp)
             modules(
-                okHttpModule + apiServiceModule + dataSourceModule + repositoryModule + viewModelModule
+                okHttpModule + apiServiceModule + dataSourceModule + repositoryModule
+                        + viewModelModule + databaseModule
             )
         }
     }

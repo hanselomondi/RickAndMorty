@@ -28,7 +28,8 @@ class CharacterRepositoryImpl(
                 }
             }
             .catch {
-                NetworkResult.Error(message = it.message ?: "Unknown Error")
+                emit(NetworkResult.Error(message = it.message ?: "Unknown Error"))
+                Log.e("getCharacters", it.message ?: "Unknown Error")
             }
     }
 

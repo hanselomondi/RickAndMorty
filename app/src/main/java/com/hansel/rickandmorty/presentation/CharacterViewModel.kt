@@ -2,6 +2,7 @@ package com.hansel.rickandmorty.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hansel.rickandmorty.domain.model.Character
 import com.hansel.rickandmorty.domain.repository.CharacterRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,6 +32,9 @@ class CharacterViewModel(
             SharingStarted.Lazily,
             ScreenState.Loading
         )
+
+    private val _favouriteCharacterList = MutableStateFlow<List<Character>>(emptyList())
+    val favouriteCharacterList: StateFlow<List<Character>> get() = _favouriteCharacterList
 
     private fun getCharacters() = viewModelScope.launch(Dispatchers.IO) {
         characterRepository.getCharacters()
@@ -64,5 +68,17 @@ class CharacterViewModel(
                         }
                     }
             }
+    }
+
+    fun getFavouriteCharacters() = viewModelScope.launch(Dispatchers.IO) {
+        characterRepository.getFavouriteCharacters().collect { favourites ->
+            _favouriteCharacterList.update {
+                favourites
+            }
+        }
+    }
+
+    fun updateCharacter(character: Character) = viewModelScope.launch {
+        characterRepository.updateCharacter(character)
     }
 }

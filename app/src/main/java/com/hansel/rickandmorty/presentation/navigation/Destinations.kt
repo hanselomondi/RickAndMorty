@@ -7,3 +7,6 @@ object CharacterListRoute
 
 @Serializable
 data class CharacterDetailsRoute(val characterId: Int)
+
+@Serializable
+object FavouriteCharacterListRoute

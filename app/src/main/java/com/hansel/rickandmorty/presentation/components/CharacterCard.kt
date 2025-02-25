@@ -10,7 +10,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,7 +38,8 @@ import com.hansel.rickandmorty.util.PREVIEW_CHARACTER
 fun CharacterCard(
     modifier: Modifier = Modifier,
     character: Character,
-    onCardClicked: (Int) -> Unit
+    onCardClicked: (Int) -> Unit,
+    onFavouriteClicked: (Character) -> Unit
 ) {
     ElevatedCard(
         modifier = modifier
@@ -65,13 +72,39 @@ fun CharacterCard(
             )
             Column(
                 modifier = Modifier
-                    .padding(dimensionResource(R.dimen.padding_small)),
+                    .padding(
+                        vertical = dimensionResource(R.dimen.padding_small),
+                        horizontal = dimensionResource(R.dimen.padding_extra_small)
+                    ),
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_extra_small))
             ) {
-                Text(
-                    text = character.name,
-                    fontSize = 24.sp
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = character.name,
+                        fontSize = 24.sp,
+                        modifier = Modifier
+                            .weight(1f)
+                    )
+                    IconButton(
+                        onClick = {
+                            onFavouriteClicked(character.copy(isFavourite = !character.isFavourite))
+                        }
+                    ) {
+                        val icon =
+                            if (character.isFavourite)
+                                Icons.Filled.Favorite
+                            else
+                                Icons.Outlined.FavoriteBorder
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null
+                        )
+                    }
+                }
                 Text(
                     text = character.species
                 )
@@ -86,8 +119,9 @@ fun CharacterCard(
 private fun CharacterCardPreview() {
     AppTheme {
         CharacterCard(
-            character = PREVIEW_CHARACTER,
-            onCardClicked = {}
+            character = PREVIEW_CHARACTER.copy(name = "Alexander"),
+            onCardClicked = {},
+            onFavouriteClicked = {}
         )
     }
 }

@@ -14,10 +14,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SuggestionChip
@@ -39,6 +46,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.hansel.rickandmorty.R
 import com.hansel.rickandmorty.domain.model.Character
+import com.hansel.rickandmorty.domain.model.CharacterStatus
 import com.hansel.rickandmorty.presentation.components.ErrorMessage
 import com.hansel.rickandmorty.presentation.components.StatusTag
 import com.hansel.rickandmorty.ui.theme.AppTheme
@@ -61,7 +69,10 @@ fun CharacterDetailsScreen(
     CharacterDetailsScreenContent(
         modifier = modifier
             .fillMaxSize(),
-        screenState = screenState
+        screenState = screenState,
+        onFavouriteClicked = { character ->
+            characterViewModel.updateCharacter(character)
+        }
     )
 }
 
@@ -69,18 +80,18 @@ fun CharacterDetailsScreen(
 @Composable
 fun CharacterDetailsScreenContent(
     modifier: Modifier = Modifier,
-    screenState: ScreenState
+    screenState: ScreenState,
+    onFavouriteClicked: (Character) -> Unit
 ) {
     Scaffold(
         modifier = modifier
     ) { innerPadding ->
         Box(
-            contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.primary)
                 .padding(innerPadding)
-                .padding(dimensionResource(R.dimen.padding_extra_small))
+                .padding(dimensionResource(R.dimen.padding_small))
         ) {
             when (screenState) {
                 is ScreenState.Loading -> {
@@ -92,6 +103,7 @@ fun CharacterDetailsScreenContent(
                     Card(
                         modifier = Modifier
                             .wrapContentSize()
+                            .verticalScroll(rememberScrollState())
                     ) {
                         Column(
                             modifier = Modifier
@@ -117,7 +129,6 @@ fun CharacterDetailsScreenContent(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(end = dimensionResource(R.dimen.padding_large))
                             ) {
                                 Text(
                                     text = character.name,
@@ -125,8 +136,24 @@ fun CharacterDetailsScreenContent(
                                     modifier = Modifier.weight(1f)
                                 )
                                 Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_large)))
-                                StatusTag(status = character.status)
+                                IconButton(
+                                    onClick = {
+                                        onFavouriteClicked(character.copy(isFavourite = !character.isFavourite))
+                                    }
+                                ) {
+                                    val icon =
+                                        if (character.isFavourite)
+                                            Icons.Filled.Favorite
+                                        else
+                                            Icons.Outlined.FavoriteBorder
+                                    Icon(
+                                        imageVector = icon,
+                                        contentDescription = null
+                                    )
+                                }
                             }
+                            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
+                            StatusTag(status = character.status)
                             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
                             CharacterDetailComponent(
                                 label = stringResource(R.string.species_label),
@@ -204,7 +231,14 @@ private fun CharacterDetailComponent(
 private fun CharacterDetailsScreenPreview() {
     AppTheme {
         CharacterDetailsScreenContent(
-            screenState = ScreenState.Success(PREVIEW_CHARACTER)
+//            screenState = ScreenState.Error("Unknown Error: Could Not Load Details")
+            screenState = ScreenState.Success(
+                data = PREVIEW_CHARACTER.copy(
+                    name = "Ants in my Eyes Johnson",
+                    status = CharacterStatus.Unknown
+                )
+            ),
+            onFavouriteClicked = {}
         )
     }
 }

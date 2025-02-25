@@ -33,6 +33,9 @@ fun CharacterListScreen(
     CharacterListContent(
         screenState = screenState,
         onCardClicked = onCardClicked,
+        onFavouriteClicked = { character ->
+            characterViewModel.updateCharacter(character)
+        },
         modifier = modifier
     )
 }
@@ -41,7 +44,8 @@ fun CharacterListScreen(
 fun CharacterListContent(
     modifier: Modifier = Modifier,
     screenState: ScreenState,
-    onCardClicked: (Int) -> Unit
+    onCardClicked: (Int) -> Unit,
+    onFavouriteClicked: (Character) -> Unit
 ) {
     Scaffold(
         modifier = modifier
@@ -68,7 +72,8 @@ fun CharacterListContent(
                         items(characters) { character ->
                             CharacterCard(
                                 character = character,
-                                onCardClicked = onCardClicked
+                                onCardClicked = onCardClicked,
+                                onFavouriteClicked = onFavouriteClicked
                             )
                         }
                     }
@@ -91,6 +96,7 @@ private fun MainScreenContentPreview() {
         CharacterListContent(
             screenState = ScreenState.Error("Network Error: Check your internet connection"),
             onCardClicked = {},
+            onFavouriteClicked = {},
             modifier = Modifier
                 .fillMaxSize()
         )

@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -16,4 +17,10 @@ interface CharacterDao {
 
     @Query("SELECT * FROM characters WHERE id=:id")
     fun getCharacterById(id: Int): Flow<CharacterEntity>
+
+    @Update
+    suspend fun updateCharacter(character: CharacterEntity)
+
+    @Query("SELECT * FROM characters WHERE isFavourite = 1")
+    fun getFavouriteCharacters(): Flow<List<CharacterEntity>>
 }

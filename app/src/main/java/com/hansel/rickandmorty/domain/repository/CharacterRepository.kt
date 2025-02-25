@@ -8,4 +8,8 @@ interface CharacterRepository {
     suspend fun getCharacters(): Flow<NetworkResult<List<Character>>>
 
     suspend fun getCharacterById(id: Int): Flow<NetworkResult<Character>>
+
+    suspend fun updateCharacter(character: Character)
+
+    suspend fun getFavouriteCharacters(): Flow<List<Character>>
 }

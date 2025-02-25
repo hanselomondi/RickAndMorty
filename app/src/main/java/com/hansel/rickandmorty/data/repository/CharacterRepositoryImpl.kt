@@ -46,4 +46,12 @@ class CharacterRepositoryImpl(
                 emit(NetworkResult.Error(message = error.message ?: "Unknown Error"))
             }
     }
+
+    override suspend fun updateCharacter(character: Character) {
+        localDataSource.updateCharacter(character)
+    }
+
+    override suspend fun getFavouriteCharacters(): Flow<List<Character>> {
+        return localDataSource.getFavouriteCharacters()
+    }
 }

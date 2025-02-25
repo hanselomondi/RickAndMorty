@@ -1,5 +1,6 @@
 package com.hansel.rickandmorty.data.local
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.hansel.rickandmorty.domain.model.Character
@@ -15,5 +16,7 @@ data class CharacterEntity(
     val type: String?,
     val location: Character.CharacterLocation,
     val image: String,
-    val episodes: List<String>
+    val episodes: List<String>,
+    @ColumnInfo(defaultValue = "0")
+    val isFavourite: Boolean = false
 )

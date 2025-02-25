@@ -2,7 +2,6 @@ package com.hansel.rickandmorty.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hansel.rickandmorty.domain.model.NetworkResult
 import com.hansel.rickandmorty.domain.repository.CharacterRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -52,15 +51,18 @@ class CharacterViewModel(
 
     fun getCharacterById(id: Int) = viewModelScope.launch {
         characterRepository.getCharacterById(id)
-            .onSuccess { character ->
-                _characterDetailsState.update {
-                    return@update ScreenState.Success(character)
-                }
-            }
-            .onError { message ->
-                _characterDetailsState.update {
-                    return@update ScreenState.Error(message)
-                }
+            .collect { result ->
+                result
+                    .onError { error ->
+                        _characterDetailsState.update {
+                            ScreenState.Error(message = error)
+                        }
+                    }
+                    .onSuccess { character ->
+                        _characterDetailsState.update {
+                            ScreenState.Success(data = character)
+                        }
+                    }
             }
     }
 }

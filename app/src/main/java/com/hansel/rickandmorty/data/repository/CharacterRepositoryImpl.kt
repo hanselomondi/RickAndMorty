@@ -33,11 +33,17 @@ class CharacterRepositoryImpl(
             }
     }
 
-    override suspend fun getCharacterById(id: Int): NetworkResult<Character> {
-        return try {
-            remoteDataSource.fetchCharacterById(id)
-        } catch (e: Exception) {
-            NetworkResult.Error("${e.message}")
-        }
+    override suspend fun getCharacterById(id: Int): Flow<NetworkResult<Character>> {
+        return localDataSource.getCharacterById(id)
+            .map { character ->
+                character?.let {
+                    Log.d("cachedCharacter", "character: $it")
+                    NetworkResult.Success(data = it)
+                } ?: remoteDataSource.fetchCharacterById(id)
+            }
+            .catch { error ->
+                Log.e("getCharacterById", error.message ?: "Unknown Error")
+                emit(NetworkResult.Error(message = error.message ?: "Unknown Error"))
+            }
     }
 }

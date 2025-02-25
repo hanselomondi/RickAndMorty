@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 interface CharacterRepository {
     suspend fun getCharacters(): Flow<NetworkResult<List<Character>>>
 
-    suspend fun getCharacterById(id: Int): NetworkResult<Character>
+    suspend fun getCharacterById(id: Int): Flow<NetworkResult<Character>>
 }

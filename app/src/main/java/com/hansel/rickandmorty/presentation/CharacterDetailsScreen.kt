@@ -24,6 +24,7 @@ import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,7 +53,10 @@ fun CharacterDetailsScreen(
     characterId: Int
 ) {
     val screenState by characterViewModel.characterDetailsState.collectAsStateWithLifecycle()
-    characterViewModel.getCharacterById(characterId)
+
+    LaunchedEffect(key1 = characterId) {
+        characterViewModel.getCharacterById(characterId)
+    }
 
     CharacterDetailsScreenContent(
         modifier = modifier

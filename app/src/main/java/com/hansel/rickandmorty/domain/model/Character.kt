@@ -1,5 +1,7 @@
 package com.hansel.rickandmorty.domain.model
 
+import kotlinx.serialization.Serializable
+
 data class Character(
     val id: Int,
     val name: String,
@@ -10,6 +12,7 @@ data class Character(
     val image: String,
     val episodes: List<String>
 ) {
+    @Serializable
     data class CharacterLocation(
         val name: String,
         val url: String?

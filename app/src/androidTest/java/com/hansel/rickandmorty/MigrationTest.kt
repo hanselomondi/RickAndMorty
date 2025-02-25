@@ -1,6 +1,5 @@
 package com.hansel.rickandmorty
 
-import androidx.room.migration.Migration
 import androidx.room.testing.MigrationTestHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.ext.junit.runners.AndroidJUnit4

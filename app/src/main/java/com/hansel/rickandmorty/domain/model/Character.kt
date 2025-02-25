@@ -10,7 +10,8 @@ data class Character(
     val type: String?,
     val location: CharacterLocation,
     val image: String,
-    val episodes: List<String>
+    val episodes: List<String>,
+    val isFavourite: Boolean
 ) {
     @Serializable
     data class CharacterLocation(

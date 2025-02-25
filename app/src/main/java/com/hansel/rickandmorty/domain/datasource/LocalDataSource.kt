@@ -9,4 +9,8 @@ interface LocalDataSource {
     fun getCharacters(): Flow<List<Character>>
 
     fun getCharacterById(id: Int): Flow<Character?>
+
+    suspend fun updateCharacter(character: Character)
+
+    fun getFavouriteCharacters(): Flow<List<Character>>
 }

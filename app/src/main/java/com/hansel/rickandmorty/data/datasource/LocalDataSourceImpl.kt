@@ -32,4 +32,16 @@ class LocalDataSourceImpl(
             it.toDomainCharacter()
         }.onEach { Log.d("RoomFlow", "Emitting character: $it") }
     }
+
+    override suspend fun updateCharacter(character: Character) {
+        characterDao.updateCharacter(character.toCharacterEntity())
+    }
+
+    override fun getFavouriteCharacters(): Flow<List<Character>> {
+        return characterDao.getFavouriteCharacters().map { characterEntities ->
+            characterEntities.map {
+                it.toDomainCharacter()
+            }
+        }
+    }
 }

@@ -71,6 +71,7 @@ fun CharacterDetailsScreenContent(
         modifier = modifier
     ) { innerPadding ->
         Box(
+            contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.primary)
@@ -167,7 +168,8 @@ fun CharacterDetailsScreenContent(
 
                 is ScreenState.Error -> {
                     ErrorMessage(
-                        message = screenState.message
+                        message = screenState.message,
+                        textColor = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }

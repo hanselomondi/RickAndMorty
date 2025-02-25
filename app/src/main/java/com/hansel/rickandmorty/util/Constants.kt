@@ -13,5 +13,6 @@ val PREVIEW_CHARACTER = Character(
     type = null,
     location = Character.CharacterLocation("kl", "kl"),
     image = "https=//rickandmortyapi.com/api/character/avatar/233.jpeg",
-    episodes = listOf("https=//rickandmortyapi.com/api/episode/28")
+    episodes = listOf("https=//rickandmortyapi.com/api/episode/28"),
+    isFavourite = true
 )

@@ -12,7 +12,8 @@ fun CharacterEntity.toDomainCharacter(): Character {
         type = type,
         location = location,
         image = image,
-        episodes = episodes
+        episodes = episodes,
+        isFavourite = isFavourite
     )
 }
 
@@ -25,6 +26,7 @@ fun Character.toCharacterEntity(): CharacterEntity {
         type = type,
         location = location,
         image = image,
-        episodes = episodes
+        episodes = episodes,
+        isFavourite = isFavourite
     )
 }

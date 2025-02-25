@@ -27,6 +27,7 @@ fun CharacterDto.toDomainCharacter(): Character {
             url = location.url?.ifEmpty { null }
         ),
         image = image,
-        episodes = episodes ?: emptyList()
+        episodes = episodes ?: emptyList(),
+        isFavourite = false
     )
 }

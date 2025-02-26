@@ -2,11 +2,13 @@ package com.hansel.rickandmorty.presentation.navigation
 
 import kotlinx.serialization.Serializable
 
-@Serializable
-object CharacterListRoute
+interface Destination
 
 @Serializable
-data class CharacterDetailsRoute(val characterId: Int)
+object CharacterListRoute : Destination
 
 @Serializable
-object FavouriteCharacterListRoute
+data class CharacterDetailsRoute(val characterId: Int) : Destination
+
+@Serializable
+object FavouriteCharacterListRoute : Destination

@@ -9,4 +9,8 @@
     <string name="episodes_label">Episodes character appears in:</string>
     <string name="type_label">Character type:</string>
     <string name="none">None</string>
+
+    <!-- BottomNavigationBar labels -->
+    <string name="home">Home</string>
+    <string name="favourites">Favourites</string>
 </resources>

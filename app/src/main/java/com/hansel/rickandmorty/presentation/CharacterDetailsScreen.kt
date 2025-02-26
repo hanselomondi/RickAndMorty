@@ -26,7 +26,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
@@ -83,126 +82,121 @@ fun CharacterDetailsScreenContent(
     screenState: ScreenState,
     onFavouriteClicked: (Character) -> Unit
 ) {
-    Scaffold(
-        modifier = modifier
-    ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.primary)
-                .padding(innerPadding)
-                .padding(dimensionResource(R.dimen.padding_small))
-        ) {
-            when (screenState) {
-                is ScreenState.Loading -> {
-                    CircularProgressIndicator()
-                }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.primary)
+            .padding(dimensionResource(R.dimen.padding_small))
+    ) {
+        when (screenState) {
+            is ScreenState.Loading -> {
+                CircularProgressIndicator()
+            }
 
-                is ScreenState.Success<*> -> {
-                    val character = screenState.data as Character
-                    Card(
+            is ScreenState.Success<*> -> {
+                val character = screenState.data as Character
+                Card(
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    Column(
                         modifier = Modifier
                             .wrapContentSize()
-                            .verticalScroll(rememberScrollState())
+                            .padding(dimensionResource(R.dimen.padding_medium))
                     ) {
-                        Column(
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(character.image)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "Image of ${character.name}",
+                            contentScale = ContentScale.Crop,
                             modifier = Modifier
-                                .wrapContentSize()
-                                .padding(dimensionResource(R.dimen.padding_medium))
+                                .size(300.dp)
+                                .align(Alignment.CenterHorizontally)
+                                .clip(RoundedCornerShape(dimensionResource(R.dimen.padding_medium)))
+                        )
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
+                        HorizontalDivider()
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
                         ) {
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(character.image)
-                                    .crossfade(true)
-                                    .build(),
-                                contentDescription = "Image of ${character.name}",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .size(300.dp)
-                                    .align(Alignment.CenterHorizontally)
-                                    .clip(RoundedCornerShape(dimensionResource(R.dimen.padding_medium)))
-                            )
-                            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
-                            HorizontalDivider()
-                            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            ) {
-                                Text(
-                                    text = character.name,
-                                    style = MaterialTheme.typography.headlineMedium,
-                                    modifier = Modifier.weight(1f)
-                                )
-                                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_large)))
-                                IconButton(
-                                    onClick = {
-                                        onFavouriteClicked(character.copy(isFavourite = !character.isFavourite))
-                                    }
-                                ) {
-                                    val icon =
-                                        if (character.isFavourite)
-                                            Icons.Filled.Favorite
-                                        else
-                                            Icons.Outlined.FavoriteBorder
-                                    Icon(
-                                        imageVector = icon,
-                                        contentDescription = null
-                                    )
-                                }
-                            }
-                            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
-                            StatusTag(status = character.status)
-                            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
-                            CharacterDetailComponent(
-                                label = stringResource(R.string.species_label),
-                                detail = character.species
-                            )
-                            CharacterDetailComponent(
-                                label = stringResource(R.string.origin_label),
-                                detail = character.species
-                            )
-                            CharacterDetailComponent(
-                                label = stringResource(R.string.type_label),
-                                detail = character.type ?: stringResource(R.string.unknown)
-                            )
                             Text(
-                                text = stringResource(R.string.episodes_label),
-                                style = MaterialTheme.typography.bodySmall
+                                text = character.name,
+                                style = MaterialTheme.typography.headlineMedium,
+                                modifier = Modifier.weight(1f)
                             )
-                            if (character.episodes.isNotEmpty()) {
-                                FlowRow {
-                                    character.episodes.forEach { episode ->
-                                        SuggestionChip(
-                                            onClick = {},
-                                            label = {
-                                                Text(
-                                                    text = episode.substringAfter("episode/")
-                                                )
-                                            },
-                                            colors = SuggestionChipDefaults.suggestionChipColors(
-                                                containerColor = MaterialTheme.colorScheme.tertiaryContainer
-                                            ),
-                                            shape = RoundedCornerShape(100f)
-                                        )
-                                    }
+                            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_large)))
+                            IconButton(
+                                onClick = {
+                                    onFavouriteClicked(character.copy(isFavourite = !character.isFavourite))
                                 }
-                            } else {
-                                Text(
-                                    text = stringResource(R.string.none)
+                            ) {
+                                val icon =
+                                    if (character.isFavourite)
+                                        Icons.Filled.Favorite
+                                    else
+                                        Icons.Outlined.FavoriteBorder
+                                Icon(
+                                    imageVector = icon,
+                                    contentDescription = null
                                 )
                             }
                         }
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
+                        StatusTag(status = character.status)
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
+                        CharacterDetailComponent(
+                            label = stringResource(R.string.species_label),
+                            detail = character.species
+                        )
+                        CharacterDetailComponent(
+                            label = stringResource(R.string.origin_label),
+                            detail = character.species
+                        )
+                        CharacterDetailComponent(
+                            label = stringResource(R.string.type_label),
+                            detail = character.type ?: stringResource(R.string.unknown)
+                        )
+                        Text(
+                            text = stringResource(R.string.episodes_label),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        if (character.episodes.isNotEmpty()) {
+                            FlowRow {
+                                character.episodes.forEach { episode ->
+                                    SuggestionChip(
+                                        onClick = {},
+                                        label = {
+                                            Text(
+                                                text = episode.substringAfter("episode/")
+                                            )
+                                        },
+                                        colors = SuggestionChipDefaults.suggestionChipColors(
+                                            containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                                        ),
+                                        shape = RoundedCornerShape(100f)
+                                    )
+                                }
+                            }
+                        } else {
+                            Text(
+                                text = stringResource(R.string.none)
+                            )
+                        }
                     }
                 }
+            }
 
-                is ScreenState.Error -> {
-                    ErrorMessage(
-                        message = screenState.message,
-                        textColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
+            is ScreenState.Error -> {
+                ErrorMessage(
+                    message = screenState.message,
+                    textColor = MaterialTheme.colorScheme.onPrimary
+                )
             }
         }
     }

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -47,43 +46,38 @@ fun CharacterListContent(
     onCardClicked: (Int) -> Unit,
     onFavouriteClicked: (Character) -> Unit
 ) {
-    Scaffold(
+    Box(
         modifier = modifier
-    ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            contentAlignment = Alignment.Center
-        ) {
-            when (screenState) {
-                is ScreenState.Loading -> {
-                    CircularProgressIndicator()
-                }
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        when (screenState) {
+            is ScreenState.Loading -> {
+                CircularProgressIndicator()
+            }
 
-                is ScreenState.Success<*> -> {
-                    val characters = screenState.data as? List<Character> ?: emptyList()
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(dimensionResource(R.dimen.padding_medium)),
-                        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
-                    ) {
-                        items(characters) { character ->
-                            CharacterCard(
-                                character = character,
-                                onCardClicked = onCardClicked,
-                                onFavouriteClicked = onFavouriteClicked
-                            )
-                        }
+            is ScreenState.Success<*> -> {
+                val characters = screenState.data as? List<Character> ?: emptyList()
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(dimensionResource(R.dimen.padding_medium)),
+                    verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
+                ) {
+                    items(characters) { character ->
+                        CharacterCard(
+                            character = character,
+                            onCardClicked = onCardClicked,
+                            onFavouriteClicked = onFavouriteClicked
+                        )
                     }
                 }
+            }
 
-                is ScreenState.Error -> {
-                    ErrorMessage(
-                        message = screenState.message
-                    )
-                }
+            is ScreenState.Error -> {
+                ErrorMessage(
+                    message = screenState.message
+                )
             }
         }
     }

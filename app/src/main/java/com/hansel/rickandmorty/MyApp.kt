@@ -1,12 +1,7 @@
 package com.hansel.rickandmorty
 
 import android.app.Application
-import com.hansel.rickandmorty.di.apiServiceModule
-import com.hansel.rickandmorty.di.dataSourceModule
-import com.hansel.rickandmorty.di.databaseModule
-import com.hansel.rickandmorty.di.okHttpModule
-import com.hansel.rickandmorty.di.repositoryModule
-import com.hansel.rickandmorty.di.viewModelModule
+import com.hansel.rickandmorty.di.appModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -17,10 +12,7 @@ class MyApp : Application() {
         startKoin {
             androidLogger()
             androidContext(this@MyApp)
-            modules(
-                okHttpModule + apiServiceModule + dataSourceModule + repositoryModule
-                        + viewModelModule + databaseModule
-            )
+            modules(appModules)
         }
     }
 }

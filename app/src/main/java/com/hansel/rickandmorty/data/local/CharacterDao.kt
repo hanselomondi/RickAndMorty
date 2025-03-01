@@ -1,5 +1,6 @@
 package com.hansel.rickandmorty.data.local
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -10,10 +11,16 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CharacterDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCharacter(characterEntity: CharacterEntity)
+    suspend fun insertCharacters(characterEntity: List<CharacterEntity>)
 
     @Query("SELECT * FROM characters")
     fun getCharacters(): Flow<List<CharacterEntity>>
+
+    @Query("SELECT * FROM characters ORDER BY id ASC")
+    fun pagingSource(): PagingSource<Int, CharacterEntity>
+
+    @Query("DELETE FROM characters")
+    suspend fun clearAll()
 
     @Query("SELECT * FROM characters WHERE id=:id")
     fun getCharacterById(id: Int): Flow<CharacterEntity>

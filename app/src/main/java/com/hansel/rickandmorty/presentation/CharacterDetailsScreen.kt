@@ -83,7 +83,7 @@ fun CharacterDetailsScreenContent(
     onFavouriteClicked: (Character) -> Unit
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.primary)
             .padding(dimensionResource(R.dimen.padding_small))

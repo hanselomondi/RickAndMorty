@@ -1,8 +1,11 @@
 package com.hansel.rickandmorty.presentation
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,6 +16,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.hansel.rickandmorty.R
 import com.hansel.rickandmorty.domain.model.Character
 import com.hansel.rickandmorty.presentation.components.CharacterCard
@@ -27,10 +34,10 @@ fun CharacterListScreen(
     characterViewModel: CharacterViewModel = koinViewModel(),
     onCardClicked: (Int) -> Unit
 ) {
-    val screenState by characterViewModel.characterListState.collectAsStateWithLifecycle()
+    val characters = characterViewModel.characterList.collectAsLazyPagingItems()
 
     CharacterListContent(
-        screenState = screenState,
+        characters = characters,
         onCardClicked = onCardClicked,
         onFavouriteClicked = { character ->
             characterViewModel.updateCharacter(character)
@@ -42,7 +49,7 @@ fun CharacterListScreen(
 @Composable
 fun CharacterListContent(
     modifier: Modifier = Modifier,
-    screenState: ScreenState,
+    characters: LazyPagingItems<Character>,
     onCardClicked: (Int) -> Unit,
     onFavouriteClicked: (Character) -> Unit
 ) {
@@ -51,20 +58,27 @@ fun CharacterListContent(
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        when (screenState) {
-            is ScreenState.Loading -> {
-                CircularProgressIndicator()
-            }
+        AnimatedVisibility(
+            visible = characters.loadState.refresh is LoadState.Loading
+        ) {
+            CircularProgressIndicator()
+        }
 
-            is ScreenState.Success<*> -> {
-                val characters = screenState.data as? List<Character> ?: emptyList()
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(dimensionResource(R.dimen.padding_medium)),
-                    verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
-                ) {
-                    items(characters) { character ->
+        AnimatedVisibility(
+            visible = characters.loadState.refresh !is LoadState.Loading
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(dimensionResource(R.dimen.padding_medium)),
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
+            ) {
+                items(
+                    count = characters.itemCount,
+                    key = characters.itemKey { it.id }
+                ) { index ->
+                    index.let {
+                        val character = characters[it]!!
                         CharacterCard(
                             character = character,
                             onCardClicked = onCardClicked,
@@ -72,17 +86,23 @@ fun CharacterListContent(
                         )
                     }
                 }
-            }
 
-            is ScreenState.Error -> {
-                ErrorMessage(
-                    message = screenState.message
-                )
+                item {
+                    if (characters.loadState.append is LoadState.Loading) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                }
             }
         }
     }
 }
 
+/*
 @CustomPreview
 @Composable
 private fun MainScreenContentPreview() {
@@ -95,4 +115,4 @@ private fun MainScreenContentPreview() {
                 .fillMaxSize()
         )
     }
-}
+}*/

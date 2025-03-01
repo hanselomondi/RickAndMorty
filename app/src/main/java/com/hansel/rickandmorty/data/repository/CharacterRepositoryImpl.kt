@@ -1,6 +1,11 @@
 package com.hansel.rickandmorty.data.repository
 
 import android.util.Log
+import androidx.paging.Pager
+import androidx.paging.PagingData
+import androidx.paging.map
+import com.hansel.rickandmorty.data.local.CharacterEntity
+import com.hansel.rickandmorty.data.mapper.toDomainCharacter
 import com.hansel.rickandmorty.domain.datasource.LocalDataSource
 import com.hansel.rickandmorty.domain.datasource.RemoteDataSource
 import com.hansel.rickandmorty.domain.model.Character
@@ -12,24 +17,15 @@ import kotlinx.coroutines.flow.map
 
 class CharacterRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
-    private val localDataSource: LocalDataSource
+    private val localDataSource: LocalDataSource,
+    private val pager: Pager<Int, CharacterEntity>
 ) : CharacterRepository {
-    override suspend fun getCharacters(): Flow<NetworkResult<List<Character>>> {
-        return localDataSource.getCharacters()
-            .map { cachedCharacters ->
-                Log.d("cachedCharacters", "$cachedCharacters")
-                if (cachedCharacters.isEmpty()) {
-                    val result = remoteDataSource.fetchCharacters()
-                    if (result is NetworkResult.Success)
-                        localDataSource.insertCharacters(result.data)
-                    result
-                } else {
-                    NetworkResult.Success(data = cachedCharacters)
-                }
-            }
-            .catch {
-                emit(NetworkResult.Error(message = it.message ?: "Unknown Error"))
-                Log.e("getCharacters", it.message ?: "Unknown Error")
+
+    override fun getCharacters(): Flow<PagingData<Character>> {
+        return pager
+            .flow
+            .map { pagingData ->
+                pagingData.map { it.toDomainCharacter() }
             }
     }
 

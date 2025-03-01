@@ -2,6 +2,8 @@ package com.hansel.rickandmorty.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.hansel.rickandmorty.domain.model.Character
 import com.hansel.rickandmorty.domain.repository.CharacterRepository
 import kotlinx.coroutines.Dispatchers
@@ -16,14 +18,9 @@ import kotlinx.coroutines.launch
 class CharacterViewModel(
     private val characterRepository: CharacterRepository
 ) : ViewModel() {
-    private val _characterListState = MutableStateFlow<ScreenState>(ScreenState.Loading)
-    val characterListState: StateFlow<ScreenState> = _characterListState
-        .onStart { getCharacters() }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Lazily,
-            ScreenState.Loading
-        )
+
+    val characterList = characterRepository.getCharacters()
+        .cachedIn(viewModelScope)
 
     private val _characterDetailsState = MutableStateFlow<ScreenState>(ScreenState.Loading)
     val characterDetailsState: StateFlow<ScreenState> = _characterDetailsState
@@ -36,22 +33,6 @@ class CharacterViewModel(
     private val _favouriteCharacterList = MutableStateFlow<List<Character>>(emptyList())
     val favouriteCharacterList: StateFlow<List<Character>> get() = _favouriteCharacterList
 
-    private fun getCharacters() = viewModelScope.launch(Dispatchers.IO) {
-        characterRepository.getCharacters()
-            .collect { result ->
-                result
-                    .onSuccess { characters ->
-                        _characterListState.update {
-                            ScreenState.Success(data = characters)
-                        }
-                    }
-                    .onError { error ->
-                        _characterListState.update {
-                            ScreenState.Error(message = error)
-                        }
-                    }
-            }
-    }
 
     fun getCharacterById(id: Int) = viewModelScope.launch {
         characterRepository.getCharacterById(id)

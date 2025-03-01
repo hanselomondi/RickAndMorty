@@ -1,11 +1,16 @@
 package com.hansel.rickandmorty.di
 
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.hansel.rickandmorty.data.datasource.LocalDataSourceImpl
 import com.hansel.rickandmorty.data.datasource.RemoteDataSourceImpl
+import com.hansel.rickandmorty.data.local.CharacterDao
 import com.hansel.rickandmorty.data.local.CharacterDatabase
+import com.hansel.rickandmorty.data.remote.CharacterMediator
 import com.hansel.rickandmorty.data.remote.RickAndMortyApi
 import com.hansel.rickandmorty.data.repository.CharacterRepositoryImpl
 import com.hansel.rickandmorty.domain.datasource.LocalDataSource
@@ -15,16 +20,15 @@ import com.hansel.rickandmorty.presentation.CharacterViewModel
 import com.hansel.rickandmorty.util.BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
-import org.koin.dsl.single
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-val okHttpModule = module {
+@OptIn(ExperimentalPagingApi::class)
+val appModules = module {
     single {
         OkHttpClient.Builder()
             .readTimeout(20, TimeUnit.SECONDS)
@@ -34,9 +38,7 @@ val okHttpModule = module {
             })
             .build()
     }
-}
 
-val apiServiceModule = module {
     single<Gson> {
         GsonBuilder()
             .setLenient()
@@ -54,9 +56,7 @@ val apiServiceModule = module {
     single {
         get<Retrofit>().create(RickAndMortyApi::class.java)
     }
-}
 
-val databaseModule = module {
     single {
         Room.databaseBuilder(
             androidContext(),
@@ -68,9 +68,7 @@ val databaseModule = module {
     single {
         get<CharacterDatabase>().getCharacterDao()
     }
-}
 
-val dataSourceModule = module {
     single<RemoteDataSource> {
         RemoteDataSourceImpl(get())
     }
@@ -78,14 +76,18 @@ val dataSourceModule = module {
     single<LocalDataSource> {
         LocalDataSourceImpl(get())
     }
-}
 
-val repositoryModule = module {
     single<CharacterRepository> {
-        CharacterRepositoryImpl(get(), get())
+        CharacterRepositoryImpl(get(), get(), get())
     }
-}
 
-val viewModelModule = module {
     viewModel { CharacterViewModel(get()) }
+
+    single {
+        Pager(
+            config = PagingConfig(pageSize = 20),
+            remoteMediator = CharacterMediator(get(), get()),
+            pagingSourceFactory = { get<CharacterDao>().pagingSource() }
+        )
+    }
 }

@@ -1,8 +1,14 @@
 package com.hansel.rickandmorty.presentation.navigation
 
+import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -21,6 +27,7 @@ import com.hansel.rickandmorty.presentation.CharacterListScreen
 import com.hansel.rickandmorty.presentation.FavouriteCharacterListScreen
 import com.hansel.rickandmorty.presentation.components.BottomNavBar
 
+@SuppressLint("UnusedContentLambdaTargetStateParameter")
 @Composable
 fun AppNavigation(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
@@ -58,27 +65,51 @@ fun AppNavigation(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .padding(innerPadding)
         ) {
-            composable<CharacterListRoute> {
-                CharacterListScreen(
-                    onCardClicked = { id ->
-                        navController.navigate(CharacterDetailsRoute(id))
+            composable<CharacterListRoute> { entry ->
+                AnimatedContent(
+                    targetState = entry.destination.route,
+                    transitionSpec = {
+                        fadeIn(animationSpec = tween(300)) togetherWith
+                                fadeOut(animationSpec = tween(300, delayMillis = 150))
                     }
-                )
+                ) { _ ->
+                    CharacterListScreen(
+                        onCardClicked = { id ->
+                            navController.navigate(CharacterDetailsRoute(id))
+                        }
+                    )
+                }
             }
 
-            composable<CharacterDetailsRoute> {
-                val character = it.toRoute<CharacterDetailsRoute>()
-                CharacterDetailsScreen(
-                    characterId = character.characterId
-                )
+            composable<CharacterDetailsRoute> { entry ->
+                val character = entry.toRoute<CharacterDetailsRoute>()
+                AnimatedContent(
+                    targetState = entry.destination.route,
+                    transitionSpec = {
+                        fadeIn(animationSpec = tween(300)) togetherWith
+                                fadeOut(animationSpec = tween(300, delayMillis = 150))
+                    }
+                ) { _ ->
+                    CharacterDetailsScreen(
+                        characterId = character.characterId
+                    )
+                }
             }
 
-            composable<FavouriteCharacterListRoute> {
-                FavouriteCharacterListScreen(
-                    onCardClicked = { id ->
-                        navController.navigate(CharacterDetailsRoute(id))
+            composable<FavouriteCharacterListRoute> { entry ->
+                AnimatedContent(
+                    targetState = entry.destination.route,
+                    transitionSpec = {
+                        fadeIn(animationSpec = tween(300)) togetherWith
+                                fadeOut(animationSpec = tween(300, delayMillis = 150))
                     }
-                )
+                ) { _ ->
+                    FavouriteCharacterListScreen(
+                        onCardClicked = { id ->
+                            navController.navigate(CharacterDetailsRoute(id))
+                        }
+                    )
+                }
             }
         }
     }

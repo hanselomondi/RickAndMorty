@@ -34,7 +34,13 @@ class CharacterViewModel(
         )
 
     private val _favouriteCharacterList = MutableStateFlow<List<Character>>(emptyList())
-    val favouriteCharacterList: StateFlow<List<Character>> get() = _favouriteCharacterList
+    val favouriteCharacterList: StateFlow<List<Character>> = _favouriteCharacterList
+        .onStart { getFavouriteCharacters() }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            emptyList()
+        )
 
     private fun getCharacters() = viewModelScope.launch(Dispatchers.IO) {
         characterRepository.getCharacters()
@@ -70,7 +76,7 @@ class CharacterViewModel(
             }
     }
 
-    fun getFavouriteCharacters() = viewModelScope.launch(Dispatchers.IO) {
+    private fun getFavouriteCharacters() = viewModelScope.launch(Dispatchers.IO) {
         characterRepository.getFavouriteCharacters().collect { favourites ->
             _favouriteCharacterList.update {
                 favourites

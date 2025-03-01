@@ -32,10 +32,6 @@ fun FavouriteCharacterListScreen(
 ) {
     val favouriteCharacters by characterViewModel.favouriteCharacterList.collectAsStateWithLifecycle()
 
-    LaunchedEffect(key1 = Unit) {
-        characterViewModel.getFavouriteCharacters()
-    }
-
     FavouriteCharacterListContent(
         favouriteCharacters = favouriteCharacters,
         onFavouriteClicked = {

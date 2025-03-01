@@ -13,19 +13,6 @@ import kotlinx.coroutines.flow.onEach
 class LocalDataSourceImpl(
     private val characterDao: CharacterDao
 ) : LocalDataSource {
-    override suspend fun insertCharacters(characters: List<Character>) {
-        characters.map { character ->
-            characterDao.insertCharacter(character.toCharacterEntity())
-        }
-    }
-
-    override fun getCharacters(): Flow<List<Character>> {
-        return characterDao.getCharacters().map { list ->
-            list.map { characterEntity ->
-                characterEntity.toDomainCharacter()
-            }
-        }
-    }
 
     override fun getCharacterById(id: Int): Flow<Character?> {
         return characterDao.getCharacterById(id).map {
